@@ -16,8 +16,8 @@ export class BusinessService {
     return this.http.delete<any>(this.api + `/business_object/` + id);
   }
 
-  updateBusinessObjectDefinition(id: number, data: any) {
-    return this.http.put<any>(this.api + `/business_object/` + id, data);
+  updateBusinessObjectDefinition(data: any) {
+    return this.http.put<any>(this.api + `/business_object`, data);
   }
  
   getBusinessObjectDefinition() {
@@ -87,4 +87,22 @@ export class BusinessService {
   deleteBusinessRule(id: number) {
     return this.http.delete<any>(this.api + `/bo_rules/` + id);
   }
+
+  getBo_ownerRelatedTable(BO_id: number) {
+    return this.http.get<any>(`https://imd-e3kdpd38q-umds-projects-76f3b139.vercel.app/bo_owner?businessObjectId=${BO_id}`);
+  }
+
+  getImplementationsRelatedTable(BO_id: number) {
+    return this.http.get<any>(`https://imd-e3kdpd38q-umds-projects-76f3b139.vercel.app/bo_implementation?businessObjectId=${BO_id}`);
+  }
+
+  getTermRelatedTable(BO_id: number) {
+    return this.http.get<any>(`https://imd-e3kdpd38q-umds-projects-76f3b139.vercel.app/bo_x_bt?businessObjectId=${BO_id}`);
+  }
+
+  getBo_rulesTable(BO_id: number) {
+    return this.http.get<any>(`https://imd-e3kdpd38q-umds-projects-76f3b139.vercel.app/bo_rules?businessObjectId=${BO_id}`);
+  }
+
+
 }
