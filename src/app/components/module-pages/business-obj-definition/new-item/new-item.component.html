@@ -1,0 +1,37 @@
+<div>
+    <header class="dialogHeader " cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>
+        New
+        <!-- <img type="button" src="../../../../../assets//icons/close-popUp.svg" (click)="onCloseDialog()"> -->
+         <button class="text-danger" (click)="onCloseDialog()">
+          X
+         </button>
+    </header>
+</div>
+ 
+<div class="row pb-3 pt-2 ">
+    <form [formGroup]="formGroup">
+        <div class="row border-b border-dashed">
+            <div class="col-md-12">
+                <div class="field">
+                    <label for="name" class="font-medium text-black">Name</label>
+                    <input autocomplete="off" type="text" formControlName="name" id="name"
+                        name="name" />
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="d-flex gap-3 mt-3 px-4 justify-content-end ">
+        <button
+            class=" border border-danger text-danger  h-full rounded font-medium d-flex align-items-center justify-content-center gap-x-2 px-4 py-2"
+            type="button" (click)="onCloseDialog()">
+           Close
+        </button>
+
+        <button
+            class=" bg-danger h-full rounded text-white font-medium d-flex align-items-center justify-content-center gap-x-2 px-4 py-2"
+            type="button" (click)="handleSave()">
+            Save
+        </button>
+    </div>
+</div>
