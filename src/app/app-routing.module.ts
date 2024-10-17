@@ -25,6 +25,7 @@ import { FactsheetDetailComponent } from './components/spa-pages/factsheet-detai
 import { FactsheetMasterComponent } from './components/spa-pages/factsheet-master/factsheet-master.component';
 import { HolidaycalendarPmiComponent } from './components/spa-pages/holidaycalendar-pmi/holidaycalendar-pmi.component';
 import { MetadataAttributesComponent } from './components/spa-pages/metadata-attributes/metadata-attributes.component';
+import { BusinessObjectStructureComponent } from './components/module-pages/business-object-structure/business-object-structure.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'pages/business', pathMatch: 'full' },
@@ -32,7 +33,8 @@ const routes: Routes = [
   
   {
     path: 'pages', component: ModulePagesComponent, children: [
-      { path: 'business', component: BusinessObjDefinitionComponent }
+      { path: 'business', component: BusinessObjDefinitionComponent },
+      { path: 'structure', component: BusinessObjectStructureComponent }
     ]
   },
 

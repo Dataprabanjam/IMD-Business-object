@@ -54,7 +54,7 @@ export class BusinessObjDefinitionComponent {
   filteredOptioncreated_by?: Observable<any[]>;
 
   DataOwnerFormGroup!: FormGroup;
-  definitionFormGroup!: FormGroup;
+  definitionFormGroup!: FormGroup; 
   SourceSystemFormGroup!: FormGroup;
   BusinessRulesFormGroup!: FormGroup;
   BusinessTermFormGroup!: FormGroup;

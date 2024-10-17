@@ -197,7 +197,7 @@
               </mat-option>
             </mat-autocomplete>
             <small class="error_text"
-              *ngIf="(FF['created_by'].errors?.['required'] && !isBOFormValid) || (FF['created_by'].invalid && !isFormValid)">
+              *ngIf="(FF['created_by'].errors?.['required'] && !isBusinessObjectDefinitionFormValid) || (FF['created_by'].invalid && !isFormValid)">
               *Required field
             </small>
           </mat-form-field>
@@ -215,7 +215,7 @@
           </div>
 
           <small class="error_text"
-            *ngIf="(FF['date_created'].errors?.['required'] && !isBOFormValid) || (FF['date_created'].invalid && !isFormValid)">
+            *ngIf="(FF['date_created'].errors?.['required'] && !isBusinessObjectDefinitionFormValid) || (FF['date_created'].invalid && !isFormValid)">
             *Required field
           </small>
         </div>
@@ -231,10 +231,6 @@
                 {{option.value}}
               </mat-option>
             </mat-autocomplete>
-            <small class="error_text"
-              *ngIf="(FF['remarks'].errors?.['required'] && !isBOFormValid) || (FF['remarks'].invalid && !isFormValid)">
-              *Required field
-            </small>
           </mat-form-field>
 
           <button type="button" 
