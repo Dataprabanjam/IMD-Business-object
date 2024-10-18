@@ -65,7 +65,6 @@ const routes: Routes = [
       { path: 'target_mapping', component: TargetMappingComponent },
     ]
   },
-  //RO
 
 ];
 

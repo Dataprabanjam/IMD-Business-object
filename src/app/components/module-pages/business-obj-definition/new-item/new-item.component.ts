@@ -87,7 +87,7 @@ export class NewItemComponent {
         next: res => {
           res.data.map((dt: any) => {
             this.dataSourceAltBusiness.data.push({ name: dt.sensitivity_reason_code, description: dt.sensitivity_reason_description })
-          })
+          });
           this.dataSourceAltBusiness.paginator = this.commonPaginatorAltBusiness;
         },
         error: err => console.log(err)

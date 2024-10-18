@@ -40,7 +40,7 @@ export class BusinessObjectStructureComponent {
       id: [this.UpdateData?.id || 0, [Validators.required]],
       project_name: [this.UpdateData?.project_name || '', [Validators.required]],
       business_object_id: [this.UpdateData?.business_object_id || '', [Validators.required]],
-      business_attribute_id: [this.UpdateData?.business_attribute_id || ''],
+      business_attribute_id: [this.UpdateData?.business_attribute_id || '', [Validators.required]],
       business_attribute_name: [this.UpdateData?.business_attribute_name || '', [Validators.required]],
       business_attribute_definition: [this.UpdateData?.business_attribute_definition || '', [Validators.required]],
       information_sensitivity_classification: [this.UpdateData?.information_sensitivity_classification || '', [Validators.required]],
@@ -53,8 +53,6 @@ export class BusinessObjectStructureComponent {
       is_business_date: [this.UpdateData?.is_business_date || 0, [Validators.required, Validators.min(1)]],
       is_mandatory: [this.UpdateData?.is_mandatory || 0, [Validators.required, Validators.min(1)]],
       is_active: [this.UpdateData?.is_active || 0, [Validators.required, Validators.min(1)]],
-
-
       version: 0,
       active: true,
       created_by: [this.UpdateData ? this.UpdateData.created_by : '', [Validators.required]],
@@ -87,12 +85,11 @@ export class BusinessObjectStructureComponent {
   infoSensitivityClassifications: any[] = [];
   infoSensitivityTypes: any[] = [];
   infoProtectionMethods: any[] = [];
+  bussDataTypes: any[] = [];
   isBusinessKeys: any[] = [];
   isBusinessDates: any[] = [];
   isMandatorys: any[] = [];
   isActives: any[] = [];
-
-
   createdByList: any[] = [];
   remarks: any[] = [];
 
@@ -134,9 +131,8 @@ export class BusinessObjectStructureComponent {
 
     this.filteredOptionsBusiness_data_type = this.FF['business_data_type'].valueChanges.pipe(
       startWith(''),
-      map((client) => (client ? filterAutocomplete(client, this.infoProtectionMethods) : this.infoProtectionMethods))
+      map((client) => (client ? filterAutocomplete(client, this.bussDataTypes) : this.bussDataTypes))
     );
-
 
   }
 
@@ -157,37 +153,36 @@ export class BusinessObjectStructureComponent {
     //   error: err => console.log(err)
     // });
 
-    // this.businessService.getBusiness_term().subscribe({
-    //   next: res => {
-    //     res.data.map((dt: any) => {
-    //       !this.boNames.some(item => item.value === dt.business_term) ? this.boNames.push({ value: dt.business_term }) : '';
-    //       !this.businessTerms.some(item => item.value === dt.business_term) ? this.businessTerms.push({ value: dt.business_term }) : '';
-    //     });
+    this.businessService.getBusiness_term().subscribe({
+      next: res => {
+        res.data.map((dt: any) => {
+          !this.boNames.some(item => item.value === dt.business_term) ? this.boNames.push({ value: dt.business_term }) : '';
+          !this.businessAttrNames.some(item => item.value === dt.business_term) ? this.businessAttrNames.push({ value: dt.business_term }) : '';
+        });
+      },
+      error: err => console.log(err)
+    });
 
-    //     // let business_id = String(Number(res.data[res.data.length - 1]?.business_term_id.substring(9)) + 1);
-    //     let BOD_ID = String(Number(res.data[res.data.length - 1]?.business_term_id.substring(2)) + 1);
-    //     let BOD_last_value = res.data.length && Number(BOD_ID) ? ( (BOD_ID.length == 1 ? 'BT000' : (BOD_ID.length == 2 ? 'BT00' : (BOD_ID.length == 3 ? 'BT00' : 'BT0'))) + BOD_ID) : "BT0001";
 
-    //     this.BTF['business_term_id'].setValue(BOD_last_value)
-    //   },
-    //   error: err => console.log(err)
-    // });
+    this.comboboxService.getSensitivity_classification().subscribe({
+      next: res => {
+        res.data.map((dt: any) => this.infoSensitivityClassifications.push({ value: dt.sensitivity_classification }))
+      },
+      error: err => console.log(err)
+    });
 
-    // this.businessService.getBo_owner().subscribe({
-    //   next: res => {
-    //     res.data.map((dt: any) => {
-    //       !this.businessUnitOwners.some(item => item.value === dt.business_unit_owner) ? this.businessUnitOwners.push({ value: dt.business_unit_owner }) : '';
-    //       !this.businessFunctions.some(item => item.value === dt.business_function) ? this.businessFunctions.push({ value: dt.business_function }) : '';
-    //     })
-    //   },
-    //   error: err => console.log(err)
-    // });
+    this.comboboxService.getSensitivity_reason_code().subscribe({
+      next: res => {
+        res.data.map((dt: any) => this.infoSensitivityTypes.push({ value: dt.sensitivity_reason_code }))
+      },
+      error: err => console.log(err)
+    });
 
     this.businessService.getBusinessObjectDefinition().subscribe({
       next: res => {
         res.data.map((dt: any) => {
           !this.projectNames.some(item => item.value === dt.project_name) ? (dt.project_name ? this.projectNames.push({ value: dt.project_name }) : '') : '';
-          !this.boIds.some(item => item.value === dt.scope_of_data_domain) ? (dt.scope_of_data_domain ? this.boIds.push({ value: dt.scope_of_data_domain }) : '') : '';
+          !this.boIds.some(item => item.value === dt.business_object_id) ? (dt.business_object_id ? this.boIds.push({ value: dt.business_object_id }) : '') : '';
           !this.remarks.some(item => item.value === dt.remarks) ? (dt.remarks ? this.remarks.push({ value: dt.remarks }) : '') : '';
           !this.createdByList.some(item => item.value === dt.created_by) ? (dt.created_by ? this.createdByList.push({ value: dt.created_by }) : '') : '';
         })
@@ -213,7 +208,7 @@ export class BusinessObjectStructureComponent {
     //   error: err => console.log(err)
     // });
 
-  
+
     // this.comboboxService.getSensitivity_classification().subscribe({
     //   next: res => {
     //     res.data.map((dt: any) => this.sensitivityClassifications.push({ value: dt.sensitivity_classification }))
@@ -232,6 +227,45 @@ export class BusinessObjectStructureComponent {
       },
     ]
 
+    this.infoProtectionMethods = [
+      {
+        key: 'Encrypter',
+        value: 'Encrypter'
+      },
+      {
+        key: 'Masked',
+        value: 'Masked'
+      },
+    ]
+
+    this.bussDataTypes = [
+      {
+        key: 'AlphaNumeric',
+        value: 'AlphaNumeric'
+      },
+      {
+        key: 'AlphaOnly',
+        value: 'AlphaOnly'
+      },
+      {
+        key: 'WholeNumber',
+        value: 'WholeNumber'
+      },
+      {
+        key: 'FractionalNumber',
+        value: 'FractionalNumber'
+      },
+      {
+        key: 'Boolean',
+        value: 'Boolean'
+      },
+      {
+        key: 'Memo',
+        value: 'Memo'
+      },
+
+    ]
+
 
   }
 
@@ -241,15 +275,12 @@ export class BusinessObjectStructureComponent {
   highlightRowDataDtOwner: any;
 
   pageEvent!: PageEvent;
-  lengthDtOwner?: number;
-  lengthSrcSystem?: number;
-  lengthBussnRule?: number;
-  lengthAltBusiness?: number;
+  length?: number;
   pageSize!: number;
   pageSizeOptions: number[] = [20, 30, 40];
   @ViewChild('commonPagDtOwner') commonPaginator!: MatPaginator;
 
-  displayedColumnBusinessOwner: any = {
+  displayedColumn: any = {
     columns: [
       'business_unit_owner',
       'business_function',
@@ -261,8 +292,7 @@ export class BusinessObjectStructureComponent {
 
   isActive = (index: number) => { return this.activeRow === index };
 
-  highlight(tableIndex: number, index: number, id: number, row: any): void {
-    if (tableIndex == 1) {
+  highlight( index: number, id: number, row: any): void {
       if (!this.isActive(index)) {
         row != this.highlightRowDataDtOwner ? this.highlightRowDataDtOwner = row : this.highlightRowDataDtOwner = '';
         this.activeRow = index;
@@ -275,21 +305,26 @@ export class BusinessObjectStructureComponent {
         this.activeRow = -1;
         this.highlightRowDataDtOwner = '';
       }
-    }
+  }
+
+  onChangePage(event: PageEvent) {
+  }
+
+  handleDelete(id: number) {
 
   }
 
   initialBOD_ID = 0;
   getTable(index: number) {
-    this.businessService.getBusinessObjectDefinition().subscribe({
-      next: res => {
-          let BOD_ID = String(Number(res.data[res.data.length - 1]?.business_object_id.substring(3)) + 1);
-          let BOD_last_value = res.data.length ? (BOD_ID.length == 1 ? 'BOD000' : (BOD_ID.length == 2 ? 'BOD00' : (BOD_ID.length == 3 ? 'BOD00' : 'BOD0'))) + BOD_ID : "BOD0001";
-          this.FF['business_object_id'].setValue(BOD_last_value)
-          this.initialBOD_ID = this.FF['business_object_id'].value;
-      },
-      error: err => console.log(err)
-    })
+    // this.businessService.getBusinessObjectDefinition().subscribe({
+    //   next: res => {
+    //       let BOD_ID = String(Number(res.data[res.data.length - 1]?.business_object_id.substring(3)) + 1);
+    //       let BOD_last_value = res.data.length ? (BOD_ID.length == 1 ? 'BOD000' : (BOD_ID.length == 2 ? 'BOD00' : (BOD_ID.length == 3 ? 'BOD00' : 'BOD0'))) + BOD_ID : "BOD0001";
+    //       this.FF['business_object_id'].setValue(BOD_last_value)
+    //       this.initialBOD_ID = this.FF['business_object_id'].value;
+    //   },
+    //   error: err => console.log(err)
+    // })
   }
 
 
@@ -358,7 +393,6 @@ export class BusinessObjectStructureComponent {
       error: err => swalError("Something went wrong"),
     });
   }
-
 
 
 }
