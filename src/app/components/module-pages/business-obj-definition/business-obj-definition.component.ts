@@ -15,6 +15,7 @@ import { ComboboxService } from 'src/app/services/combobox.service';
 import { ViewGridComponent } from './view-grid/view-grid.component';
 import { MatTooltip } from '@angular/material/tooltip';
 import { NewBONameComponent } from './new-bo-name/new-bo-name.component';
+import { BusinessObjectStructureComponent } from '../business-object-structure/business-object-structure.component';
 
 @Component({
   selector: 'app-business-obj-definition',
@@ -1206,7 +1207,7 @@ export class BusinessObjDefinitionComponent {
   }
 
   updateBusinessObjectDefinition() {
-    let model = {
+    let model = { 
       data: this.definitionFormGroup.value,
       conditions: {
         id: this.UpdateDataBusinessObjectDefinition.id
@@ -1246,6 +1247,24 @@ export class BusinessObjDefinitionComponent {
         }
       },
       error: err => console.log(err)
+    })
+  }
+
+  addBOS_dialogRef!: MatDialogRef<BusinessObjectStructureComponent>
+
+  addBOS(){
+    this.addBOS_dialogRef = this.dialog.open(BusinessObjectStructureComponent,
+      {
+        disableClose: true,
+        // hasBackdrop: true,
+        width: '90%',
+        height: 'auto',
+        autoFocus: false,
+      })
+
+    this.addBOS_dialogRef.afterClosed().subscribe({
+      next: res => {
+      }
     })
   }
 

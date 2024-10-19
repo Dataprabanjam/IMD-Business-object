@@ -1,3 +1,13 @@
+<div>
+  <header class="dialogHeader " cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>
+      BOS
+
+      <button class="text-danger" (click)="onCloseDialog()">
+          X
+      </button>
+  </header>
+</div>
+
 <div class="row">
   <form [formGroup]="definitionFormGroup" class="p-3">
     <div class="d-flex justify-content-between">
@@ -7,7 +17,7 @@
     </div>
 
     <div class="row pe-2">
-      <div class="col-md-3 relative d-flex">
+      <div class="col-md-4 relative d-flex">
         <mat-form-field class="example-full-width field  col-11">
           <label matTooltip="Name of the Project" for="fullName" class="font-medium text-black ">
             Project name</label>
@@ -30,10 +40,10 @@
         </button>
       </div>
 
-      <div class="col-md-3 d-flex relative">
+      <div class="col-md-4 d-flex relative">
         <mat-form-field class="example-full-width field col-11">
           <label #BONameTooltip="matTooltip"
-            matTooltip="Business Object Name , how an object/entity is addressed in business terms." for="fullName"
+            matTooltip="Unique identifier for Business Objects. Must be available in Business Objects and should be a drop down for the user to pick up the Business Object ID." for="fullName"
             class="font-medium text-black required-label">Business Object ID</label>
           <input maxlength="20" onkeypress='return event.charCode != 45' type="text" id="customerId" name="customerId" class="col-12"
             matInput formControlName="business_object_id" [matAutocomplete]="autoObjName">
@@ -55,10 +65,10 @@
         </button>
       </div>
 
-      <div class="col-md-3 d-flex relative">
+      <div class="col-md-4 d-flex relative">
         <mat-form-field class="example-full-width field col-11">
           <label
-            matTooltip="The granularity of dimensions by which the data is captured within the business object /entity. For example balances are captured by country, by product, by GL Account by Customer Owner."
+            matTooltip="Unique identifier for Business Attributes, should be sequentially generated value which increments itself for each new attribute.  Prefix with BOS."
             for="fullName" class="font-medium text-black required-label">Business Attribute ID</label>
           <input type="text" id="customerId" name="customerId" class="col-12" matInput
             formControlName="business_attribute_id" [matAutocomplete]="autoDomain">
@@ -79,9 +89,9 @@
         </button>
       </div>
 
-      <div class="col-md-3 d-flex relative">
+      <div class="col-md-4 d-flex relative">
         <mat-form-field class="example-full-width field col-11">
-          <label matTooltip="" for="fullName" class="font-medium text-black required-label">Business Attribute Name
+          <label matTooltip="Name by which an attribute would be addressed in business terms/business name." for="fullName" class="font-medium text-black required-label">Business Attribute Name
           </label>
           <input maxlength="100" type="text" id="customerId" name="customerId" class="col-12" matInput
             formControlName="business_attribute_name" [matAutocomplete]="autoasset_type">
@@ -102,10 +112,10 @@
           +
         </button>
       </div>
-
-      <div class="col-md-6">
+ 
+      <div class="col-md-8">
         <div class="field">
-          <label matTooltip="Brief description about the object" for="fullName"
+          <label matTooltip="Brief description about the of the Atribute." for="fullName"
             class="font-medium text-black required-label">Business Attribute Definition</label>
           <textarea name="Description" formControlName="business_attribute_definition"
             id="business_attribute_definition"></textarea>
@@ -117,9 +127,9 @@
         </div>
       </div>
       
-      <div class="col-md-3 d-flex relative">
+      <div class="col-md-4 d-flex relative">
         <mat-form-field class="example-full-width field col-11">
-          <label matTooltip="" for="fullName" class="font-medium text-black required-label">
+          <label matTooltip="Sensitivity classification as per LCS guidleines. Eg Secret, confidential etc." for="fullName" class="font-medium text-black required-label">
             Info. Sensitivity Classification
           </label>
           <input maxlength="20" type="text" id="customerId" name="customerId" class="col-12" matInput
@@ -143,9 +153,9 @@
         </button>
       </div>
 
-      <div class="col-md-3 d-flex relative">
+      <div class="col-md-4 d-flex relative">
         <mat-form-field class="example-full-width field col-11">
-          <label matTooltip="" for="fullName" class="font-medium text-black required-label">
+          <label matTooltip="The cause/reason for the sensitivity claasification. Eg . PII, GDPR etc." for="fullName" class="font-medium text-black required-label">
             Info. Sensitivity Type
           </label>
           <input maxlength="20" type="text" id="customerId" name="customerId" class="col-12" matInput
@@ -169,9 +179,9 @@
       </div>
 
 
-      <div class="col-md-3 d-flex relative">
+      <div class="col-md-4 d-flex relative">
         <mat-form-field class="example-full-width field col-11">
-          <label matTooltip="" for="fullName" class="font-medium text-black required-label">
+          <label matTooltip="Ways/Rules to protect data. Eg encrypt, mask, mask partially etc." for="fullName" class="font-medium text-black required-label">
             Info. protection method
           </label>
           <input maxlength="20" type="text" id="customerId" name="customerId" class="col-12" matInput
@@ -194,9 +204,9 @@
         </button>
       </div>
 
-      <div class="col-md-3 d-flex relative">
+      <div class="col-md-4 d-flex relative">
         <mat-form-field class="example-full-width field col-11">
-          <label matTooltip="" for="fullName" class="font-medium text-black required-label">
+          <label matTooltip="Data type of the attribute, e.g. Number,Date,string/text." for="fullName" class="font-medium text-black required-label">
             Business Data Type
           </label>
           <input maxlength="20" type="text" id="customerId" name="customerId" class="col-12" matInput
@@ -218,9 +228,9 @@
         </button>
       </div>
 
-      <div class="col-md-3 d-flex relative">
+      <div class="col-md-4 d-flex relative">
         <div class="field">
-          <label matTooltip="" for="fullName" class="font-medium text-black required-label">
+          <label matTooltip="In case of string data types, what would be the maximum allowed number of characters , for numeric would be the maximum bytes required to store the data." for="fullName" class="font-medium text-black required-label">
             Business Attribute Length
           </label>
           <input type="number" id="customerId" name="customerId" class="col-12"
@@ -234,9 +244,9 @@
       </div>
 
 
-      <div class="col-md-3 d-flex relative">
+      <div class="col-md-4 d-flex relative">
         <div class="field">
-          <label matTooltip="" for="fullName" class="font-medium text-black required-label">
+          <label matTooltip="In case of numeric data types, what would be the number of digits to the right of decimal." for="fullName" class="font-medium text-black required-label">
             Business Attribute Scale
           </label>
           <input type="number" id="business_attribute_scale" name="business_attribute_scale" class="col-12"
@@ -252,7 +262,7 @@
       <div class="col-md-3">
         <div class="field col-12">
           <label
-            matTooltip="Flag to indicate whether the Object is active or not. If the Object is currently being used or will be used, it will be 'Y'. If this Object is no longer valid it would be 'N'."
+            matTooltip="Flag to identify if the attribute is part of attributes that uniquely define a data record as identified by business terms. It is not similar to primary key, which could be a sequentially generated value to identify a data record."
             for="active" class="font-medium text-black required-label">Is Business Key</label>
           <mat-form-field class="col-12">
             <mat-select formControlName="is_business_key">
@@ -269,7 +279,7 @@
       <div class="col-md-3">
         <div class="field col-12">
           <label
-            matTooltip="Flag to indicate whether the Object is active or not. If the Object is currently being used or will be used, it will be 'Y'. If this Object is no longer valid it would be 'N'."
+            matTooltip="Flag to identify if the attribute would be able to classify the data in terms of date and time. For example transaction_date in case of transactions would be a business date."
             for="active" class="font-medium text-black required-label">Is Business Date</label>
           <mat-form-field class="col-12">
             <mat-select formControlName="is_business_date">
@@ -286,7 +296,7 @@
       <div class="col-md-3">
         <div class="field col-12">
           <label
-            matTooltip="Flag to indicate whether the Object is active or not. If the Object is currently being used or will be used, it will be 'Y'. If this Object is no longer valid it would be 'N'."
+            matTooltip="Flag to indicate whether the attribute is a mandatory attribute or not. If it always requires a valid value, this should be 'Y' else 'N'"
             for="active" class="font-medium text-black required-label">Is Mandatory (Y/N)</label>
           <mat-form-field class="col-12">
             <mat-select formControlName="is_mandatory">
@@ -303,7 +313,7 @@
       <div class="col-md-3">
         <div class="field col-12">
           <label
-            matTooltip="Flag to indicate whether the Object is active or not. If the Object is currently being used or will be used, it will be 'Y'. If this Object is no longer valid it would be 'N'."
+            matTooltip="Flag to indicate whether the Attribute is active or not. If the Attribute is currently being used or will be used, it will be 'Y'. If this attribute is no longer valid it would be 'N'"
             for="active" class="font-medium text-black required-label">Is Active (Y/N)</label>
           <mat-form-field class="col-12">
             <mat-select formControlName="is_active">
@@ -322,7 +332,7 @@
         <mat-form-field class="example-full-width field col-11">
           <label matTooltip="Name of the person who created/updated the record." for="fullName"
             class="font-medium text-black required-label">Created/Updated By</label>
-          <input type="text" id="customerId" name="customerId" class="col-12" matInput formControlName="created_by"
+          <input type="text" id="customerId" name="customerId" class="col-12" matInput formControlName="created_updated_by"
             [matAutocomplete]="autocreated_updated_By">
           <mat-autocomplete #autocreated_updated_By="matAutocomplete">
             <mat-option *ngFor="let option of filteredOptioncreated_by | async " [value]="option.value">
@@ -330,7 +340,7 @@
             </mat-option>
           </mat-autocomplete>
           <small class="error_text"
-            *ngIf="(FF['created_by'].errors?.['required'] && !isFormValid) || (FF['created_by'].invalid && !isFormValid)">
+            *ngIf="(FF['created_updated_by'].errors?.['required'] && !isFormValid) || (FF['created_updated_by'].invalid && !isFormValid)">
             *Required field
           </small>
         </mat-form-field>
@@ -339,22 +349,22 @@
         </button>
       </div>
 
-      <div class="col-md-2">
+      <div class="col-md-3">
         <div class="field">
           <label matTooltip="Date on which the record was created/updated." for="fullName"
             class="font-medium text-black required-label">Created/Updated Date</label>
-          <input type="date" id="customerId" name="customerId" class="col-12" formControlName="date_created">
+          <input type="date" id="customerId" name="customerId" class="col-12" formControlName="created_updated_date">
         </div>
 
         <small class="error_text"
-          *ngIf="(FF['date_created'].errors?.['required'] && !isFormValid) || (FF['date_created'].invalid && !isFormValid)">
+          *ngIf="(FF['created_updated_date'].errors?.['required'] && !isFormValid) || (FF['created_updated_date'].invalid && !isFormValid)">
           *Required field
         </small>
       </div>
 
       <div class="col-md-3 d-flex relative">
         <mat-form-field class="example-full-width field col-11">
-          <label matTooltip="Any additional information." for="fullName" class="font-medium text-black ">Remarks</label>
+          <label matTooltip="Any additional information" for="fullName" class="font-medium text-black ">Remarks</label>
           <input type="text" id="customerId" name="customerId" class="col-12" matInput formControlName="remarks"
             [matAutocomplete]="autoremarks">
           <mat-autocomplete #autoremarks="matAutocomplete">

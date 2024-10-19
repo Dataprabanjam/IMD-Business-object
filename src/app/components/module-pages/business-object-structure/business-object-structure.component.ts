@@ -10,6 +10,7 @@ import { ComboboxService } from 'src/app/services/combobox.service';
 import { swalError, swalInfo, swalSuccess } from 'src/app/utils/alert';
 import { filterAutocomplete } from 'src/app/utils/autocomplete';
 import { NewItemComponent } from '../business-obj-definition/new-item/new-item.component';
+import { BusinessStructureService } from 'src/app/services/business-structure.service';
 
 @Component({
   selector: 'app-business-object-structure',
@@ -21,9 +22,11 @@ export class BusinessObjectStructureComponent {
   constructor(
     private dialog: MatDialog,
     private fb: FormBuilder,
+    private businessStructureService: BusinessStructureService,
     private businessService: BusinessService,
     private comboboxService: ComboboxService,
     private readonly changeDetectorRef: ChangeDetectorRef,
+    private dialogRef: MatDialogRef<BusinessObjectStructureComponent>,
   ) {
     this.getTable(1);
     this.getComboboxData();
@@ -37,7 +40,7 @@ export class BusinessObjectStructureComponent {
 
   generateForm() {
     this.definitionFormGroup = this.fb.group({
-      id: [this.UpdateData?.id || 0, [Validators.required]],
+      // id: [this.UpdateData?.id || 0, [Validators.required]],
       project_name: [this.UpdateData?.project_name || '', [Validators.required]],
       business_object_id: [this.UpdateData?.business_object_id || '', [Validators.required]],
       business_attribute_id: [this.UpdateData?.business_attribute_id || '', [Validators.required]],
@@ -49,14 +52,12 @@ export class BusinessObjectStructureComponent {
       business_data_type: [this.UpdateData?.business_data_type || '', [Validators.required]],
       business_attribute_length: [this.UpdateData?.business_attribute_length || 0, [Validators.required]],
       business_attribute_scale: [this.UpdateData?.business_attribute_scale || 0, [Validators.required]],
-      is_business_key: [this.UpdateData?.is_business_key || 0, [Validators.required, Validators.min(1)]],
-      is_business_date: [this.UpdateData?.is_business_date || 0, [Validators.required, Validators.min(1)]],
-      is_mandatory: [this.UpdateData?.is_mandatory || 0, [Validators.required, Validators.min(1)]],
-      is_active: [this.UpdateData?.is_active || 0, [Validators.required, Validators.min(1)]],
-      version: 0,
-      active: true,
-      created_by: [this.UpdateData ? this.UpdateData.created_by : '', [Validators.required]],
-      date_created: [this.UpdateData ? formatDate(this.UpdateData.date_created, 'yyyy-MM-dd', 'en') : formatDate(new Date(), 'yyyy-MM-dd', 'en'), [Validators.required]],
+      is_business_key: [this.UpdateData?.is_business_key || '', [Validators.required, Validators.min(1)]],
+      is_business_date: [this.UpdateData?.is_business_date || '', [Validators.required, Validators.min(1)]],
+      is_mandatory: [this.UpdateData?.is_mandatory || '', [Validators.required, Validators.min(1)]],
+      is_active: [this.UpdateData?.is_active || '', [Validators.required, Validators.min(1)]],
+      created_updated_by: [this.UpdateData ? this.UpdateData.created_updated_by : '', [Validators.required]],
+      created_updated_date: [this.UpdateData ? formatDate(this.UpdateData.created_updated_date, 'yyyy-MM-dd', 'en') : formatDate(new Date(), 'yyyy-MM-dd', 'en'), [Validators.required]],
       remarks: this.UpdateData ? this.UpdateData.remarks : '',
     });
   }
@@ -184,7 +185,7 @@ export class BusinessObjectStructureComponent {
           !this.projectNames.some(item => item.value === dt.project_name) ? (dt.project_name ? this.projectNames.push({ value: dt.project_name }) : '') : '';
           !this.boIds.some(item => item.value === dt.business_object_id) ? (dt.business_object_id ? this.boIds.push({ value: dt.business_object_id }) : '') : '';
           !this.remarks.some(item => item.value === dt.remarks) ? (dt.remarks ? this.remarks.push({ value: dt.remarks }) : '') : '';
-          !this.createdByList.some(item => item.value === dt.created_by) ? (dt.created_by ? this.createdByList.push({ value: dt.created_by }) : '') : '';
+          !this.createdByList.some(item => item.value === dt.created_updated_by) ? (dt.created_updated_by ? this.createdByList.push({ value: dt.created_updated_by }) : '') : '';
         })
       },
       error: err => console.log(err)
@@ -218,11 +219,11 @@ export class BusinessObjectStructureComponent {
 
     this.isBusinessKeys = this.isBusinessDates = this.isMandatorys = this.isActives = [
       {
-        key: 1,
+        key: '1',
         value: 'Yes'
       },
       {
-        key: 2,
+        key: '2',
         value: 'No'
       },
     ]
@@ -265,8 +266,6 @@ export class BusinessObjectStructureComponent {
       },
 
     ]
-
-
   }
 
   UpdateData: any;
@@ -282,29 +281,63 @@ export class BusinessObjectStructureComponent {
 
   displayedColumn: any = {
     columns: [
-      'business_unit_owner',
-      'business_function',
-      'role',
-      '#',
+      "project_name",
+      "business_object_id",
+      "business_attribute_id",
+      "business_attribute_name",
+      "business_attribute_definition",
+      "information_sensitivity_classification",
+      "information_sensitivity_type",
+      "information_protection_method",
+      "business_data_type",
+      "business_attribute_length",
+      "business_attribute_scale",
+      "is_business_key",
+      "is_business_date",
+      "is_mandatory",
+      "is_active",
+      "created_updated_by",
+      "created_updated_date",
+      "remarks"
     ],
-    columnsTranslates: ['Business Unit Owner', 'Business Function', 'Role', '#']
+    columnsTranslates:
+      [
+        "Project name",
+        "Business object id",
+        "Business attribute id",
+        "Business attribute name",
+        "Business attribute definition",
+        "Information sensitivity classification",
+        "Information sensitivitytype",
+        "Information protection method",
+        "Business data type",
+        "Business attribute length",
+        "Business attribute scale",
+        "Is business key",
+        "Is business date",
+        "Is mandatory",
+        "Is active",
+        "Created updated by",
+        "Created updated date",
+        "Remarks"
+      ]
   };
 
   isActive = (index: number) => { return this.activeRow === index };
 
-  highlight( index: number, id: number, row: any): void {
-      if (!this.isActive(index)) {
-        row != this.highlightRowDataDtOwner ? this.highlightRowDataDtOwner = row : this.highlightRowDataDtOwner = '';
-        this.activeRow = index;
-        this.UpdateData = row;
-        this.generateForm();
-      }
-      else {
-        this.UpdateData = row;
-        this.generateForm();
-        this.activeRow = -1;
-        this.highlightRowDataDtOwner = '';
-      }
+  highlight(index: number, id: number, row: any): void {
+    if (!this.isActive(index)) {
+      row != this.highlightRowDataDtOwner ? this.highlightRowDataDtOwner = row : this.highlightRowDataDtOwner = '';
+      this.activeRow = index;
+      this.UpdateData = row;
+      this.generateForm();
+    }
+    else {
+      this.UpdateData = '';
+      this.generateForm();
+      this.activeRow = -1;
+      this.highlightRowDataDtOwner = '';
+    }
   }
 
   onChangePage(event: PageEvent) {
@@ -316,15 +349,20 @@ export class BusinessObjectStructureComponent {
 
   initialBOD_ID = 0;
   getTable(index: number) {
-    // this.businessService.getBusinessObjectDefinition().subscribe({
-    //   next: res => {
-    //       let BOD_ID = String(Number(res.data[res.data.length - 1]?.business_object_id.substring(3)) + 1);
-    //       let BOD_last_value = res.data.length ? (BOD_ID.length == 1 ? 'BOD000' : (BOD_ID.length == 2 ? 'BOD00' : (BOD_ID.length == 3 ? 'BOD00' : 'BOD0'))) + BOD_ID : "BOD0001";
-    //       this.FF['business_object_id'].setValue(BOD_last_value)
-    //       this.initialBOD_ID = this.FF['business_object_id'].value;
-    //   },
-    //   error: err => console.log(err)
-    // })
+    this.businessStructureService.getBo_structure().subscribe({
+      next: res => {
+        let BOD_ID = String(Number(res.data[res.data.length - 1]?.business_attribute_id.substring(3)) + 1);
+        let BOD_last_value = res.data.length ? (BOD_ID.length == 1 ? 'BOS000' : (BOD_ID.length == 2 ? 'BOS00' : (BOD_ID.length == 3 ? 'BOS00' : 'BOS0'))) + BOD_ID : "BOS0001";
+        this.FF['business_attribute_id'].setValue(BOD_last_value)
+
+        console.log(res)
+
+        res.data.map((dt: any) => dt.created_updated_date = formatDate(dt.created_updated_date, 'yyyy-MM-dd', 'en'))
+        this.dataSource = new MatTableDataSource<any>(res.data)
+        this.dataSource.paginator = this.commonPaginator;
+      },
+      error: err => console.log(err)
+    })
   }
 
 
@@ -371,21 +409,26 @@ export class BusinessObjectStructureComponent {
     let model = {
       data: this.definitionFormGroup.value,
       conditions: {
-        id: this.UpdateData.id
+        business_object_id: this.UpdateData?.business_object_id,
+        business_attribute_id: this.UpdateData?.business_attribute_id
       }
     }
 
-    this.businessService.updateBusinessObjectDefinition(model).subscribe({
+    this.businessStructureService.updateBo_structure(model).subscribe({
       next: res => {
         swalSuccess('Updated successfully!');
         this.getTable(0);
+        this.UpdateData = '';
+        this.generateForm();
+        this.activeRow = -1;
+        this.highlightRowDataDtOwner = '';
       },
       error: err => swalError("Something went wrong"),
     })
   }
 
   saveForm() {
-    this.businessService.saveBusinessObjectDefinition(this.definitionFormGroup.value).subscribe({
+    this.businessStructureService.saveBo_structure(this.definitionFormGroup.value).subscribe({
       next: res => {
         swalSuccess("Saved successfully.");
         this.getTable(0);
@@ -394,5 +437,8 @@ export class BusinessObjectStructureComponent {
     });
   }
 
+  onCloseDialog() {
+     this.dialogRef.close();
+  }
 
 }
