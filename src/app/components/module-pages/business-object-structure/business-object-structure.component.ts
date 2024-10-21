@@ -11,6 +11,8 @@ import { swalError, swalInfo, swalSuccess } from 'src/app/utils/alert';
 import { filterAutocomplete } from 'src/app/utils/autocomplete';
 import { NewItemComponent } from '../business-obj-definition/new-item/new-item.component';
 import { BusinessStructureService } from 'src/app/services/business-structure.service';
+import { NewBONameComponent } from '../business-obj-definition/new-bo-name/new-bo-name.component';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-business-object-structure',
@@ -26,7 +28,8 @@ export class BusinessObjectStructureComponent {
     private businessService: BusinessService,
     private comboboxService: ComboboxService,
     private readonly changeDetectorRef: ChangeDetectorRef,
-    private dialogRef: MatDialogRef<BusinessObjectStructureComponent>,
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
   ) {
     this.getTable(1);
     this.getComboboxData();
@@ -34,6 +37,19 @@ export class BusinessObjectStructureComponent {
     this.generateForm();
     this.keyUpBODefinition();
 
+    this.activatedRoute.paramMap.subscribe({
+      next: (res: any) => res.params ? (
+        console.log(res.params.bo_id),
+        console.log(res.params.bo_name),
+        console.log(res.params.project_name),
+
+        this.FF['business_object_id'].setValue(res.params.bo_id),
+        this.FF['business_object_name'].setValue(res.params.bo_name),
+        this.FF['project_name'].setValue(res.params.project_name)
+      ) : null,
+      error: err => console.log(err)
+    })
+    
   }
 
   definitionFormGroup!: FormGroup;
@@ -42,6 +58,7 @@ export class BusinessObjectStructureComponent {
     this.definitionFormGroup = this.fb.group({
       // id: [this.UpdateData?.id || 0, [Validators.required]],
       project_name: [this.UpdateData?.project_name || '', [Validators.required]],
+      business_object_name: [this.UpdateData?.business_object_name || '', [Validators.required]],
       business_object_id: [this.UpdateData?.business_object_id || '', [Validators.required]],
       business_attribute_id: [this.UpdateData?.business_attribute_id || '', [Validators.required]],
       business_attribute_name: [this.UpdateData?.business_attribute_name || '', [Validators.required]],
@@ -66,6 +83,7 @@ export class BusinessObjectStructureComponent {
     return this.definitionFormGroup.controls;
   }
 
+  filteredOptionsObjName?: Observable<any[]>;
   filteredOptionsClient?: Observable<any[]>;
   filteredOptionsBOIds?: Observable<any[]>;
   filteredOptionsBOAttributeIds?: Observable<any[]>;
@@ -98,6 +116,11 @@ export class BusinessObjectStructureComponent {
     this.filteredOptionsClient = this.FF['project_name'].valueChanges.pipe(
       startWith(''),
       map((client) => (client ? filterAutocomplete(client, this.projectNames) : this.projectNames))
+    );
+
+    this.filteredOptionsObjName = this.FF['business_object_name'].valueChanges.pipe(
+      startWith(''),
+      map((client) => (client ? filterAutocomplete(client, this.boNames) : this.boNames))
     );
 
     this.filteredOptionsBOIds = this.FF['business_object_id'].valueChanges.pipe(
@@ -136,6 +159,7 @@ export class BusinessObjectStructureComponent {
     );
 
   }
+  
 
   getComboboxData() {
     // this.businessService.getBusinessRule().subscribe({
@@ -281,8 +305,7 @@ export class BusinessObjectStructureComponent {
 
   displayedColumn: any = {
     columns: [
-      "project_name",
-      "business_object_id",
+      "business_object_name",
       "business_attribute_id",
       "business_attribute_name",
       "business_attribute_definition",
@@ -302,8 +325,7 @@ export class BusinessObjectStructureComponent {
     ],
     columnsTranslates:
       [
-        "Project name",
-        "Business object id",
+        "BO name",
         "Business attribute id",
         "Business attribute name",
         "Business attribute definition",
@@ -355,8 +377,6 @@ export class BusinessObjectStructureComponent {
         let BOD_last_value = res.data.length ? (BOD_ID.length == 1 ? 'BOS000' : (BOD_ID.length == 2 ? 'BOS00' : (BOD_ID.length == 3 ? 'BOS00' : 'BOS0'))) + BOD_ID : "BOS0001";
         this.FF['business_attribute_id'].setValue(BOD_last_value)
 
-        console.log(res)
-
         res.data.map((dt: any) => dt.created_updated_date = formatDate(dt.created_updated_date, 'yyyy-MM-dd', 'en'))
         this.dataSource = new MatTableDataSource<any>(res.data)
         this.dataSource.paginator = this.commonPaginator;
@@ -365,9 +385,28 @@ export class BusinessObjectStructureComponent {
     })
   }
 
+  boName_dialogRef?: MatDialogRef<NewBONameComponent>;
+  addBONameList() {
+    this.boName_dialogRef = this.dialog.open(NewBONameComponent,
+      {
+        // disableClose: true,
+        hasBackdrop: true,
+        width: '45%',
+        height: 'auto',
+        autoFocus: false,
+        data: {
+          bo_id: this.FF['business_object_id'].value
+        }
+      })
+
+    this.boName_dialogRef.afterClosed().subscribe({
+      next: res => {
+        this.getComboboxData()
+      }
+    })
+  }
 
   item_dialogRef?: MatDialogRef<NewItemComponent>;
-
   addListValue(name: string) {
     this.item_dialogRef = this.dialog.open(NewItemComponent,
       {
@@ -435,10 +474,6 @@ export class BusinessObjectStructureComponent {
       },
       error: err => swalError("Something went wrong"),
     });
-  }
-
-  onCloseDialog() {
-     this.dialogRef.close();
   }
 
 }

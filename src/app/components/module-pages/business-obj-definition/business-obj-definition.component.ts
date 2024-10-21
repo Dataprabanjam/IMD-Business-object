@@ -16,6 +16,7 @@ import { ViewGridComponent } from './view-grid/view-grid.component';
 import { MatTooltip } from '@angular/material/tooltip';
 import { NewBONameComponent } from './new-bo-name/new-bo-name.component';
 import { BusinessObjectStructureComponent } from '../business-object-structure/business-object-structure.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-business-obj-definition',
@@ -23,6 +24,31 @@ import { BusinessObjectStructureComponent } from '../business-object-structure/b
   styleUrls: ['./business-obj-definition.component.scss']
 })
 export class BusinessObjDefinitionComponent {
+
+  constructor(
+    private router: Router,
+    private dialog: MatDialog,
+    private fb: FormBuilder,
+    private businessService: BusinessService,
+    private comboboxService: ComboboxService,
+    private readonly changeDetectorRef: ChangeDetectorRef,
+  ) {
+    this.getTableBusinessObjectDefinition(1);
+
+
+    this.generateForm();
+    this.generateDtOwnerForm();
+    this.generateBusinessRulesFormGroup();
+    this.generateSourceSystemFormGroup();
+    this.generateBusinessTermFormGroup();
+
+    this.keyUpOwner();
+    this.keyUpBODefinition();
+    this.keyUpImpDetails();
+    this.keyUpBusinessAlternateRule();
+
+  }
+
   objectTypes: any[] = [];
   paymentPurposeTypeIds: any[] = [];
   paymentMethodIds: any[] = [];
@@ -55,7 +81,7 @@ export class BusinessObjDefinitionComponent {
   filteredOptioncreated_by?: Observable<any[]>;
 
   DataOwnerFormGroup!: FormGroup;
-  definitionFormGroup!: FormGroup; 
+  definitionFormGroup!: FormGroup;
   SourceSystemFormGroup!: FormGroup;
   BusinessRulesFormGroup!: FormGroup;
   BusinessTermFormGroup!: FormGroup;
@@ -123,29 +149,6 @@ export class BusinessObjDefinitionComponent {
 
   businessObjIds: any[] = [];
 
-  constructor(
-    private dialog: MatDialog,
-    private fb: FormBuilder,
-    private businessService: BusinessService,
-    private comboboxService: ComboboxService,
-    private readonly changeDetectorRef: ChangeDetectorRef,
-  ) {
-    this.getTableBusinessObjectDefinition(1);
-
-
-    this.generateForm();
-    this.generateDtOwnerForm();
-    this.generateBusinessRulesFormGroup();
-    this.generateSourceSystemFormGroup();
-    this.generateBusinessTermFormGroup();
-
-    this.keyUpOwner();
-    this.keyUpBODefinition();
-    this.keyUpImpDetails();
-    this.keyUpBusinessAlternateRule();
-
-  }
-
   ngOnInit() {
     this.getComboboxData();
   }
@@ -185,7 +188,7 @@ export class BusinessObjDefinitionComponent {
 
         // let business_id = String(Number(res.data[res.data.length - 1]?.business_term_id.substring(9)) + 1);
         let BOD_ID = String(Number(res.data[res.data.length - 1]?.business_term_id.substring(2)) + 1);
-        let BOD_last_value = res.data.length && Number(BOD_ID) ? ( (BOD_ID.length == 1 ? 'BT000' : (BOD_ID.length == 2 ? 'BT00' : (BOD_ID.length == 3 ? 'BT00' : 'BT0'))) + BOD_ID) : "BT0001";
+        let BOD_last_value = res.data.length && Number(BOD_ID) ? ((BOD_ID.length == 1 ? 'BT000' : (BOD_ID.length == 2 ? 'BT00' : (BOD_ID.length == 3 ? 'BT00' : 'BT0'))) + BOD_ID) : "BT0001";
 
         this.BTF['business_term_id'].setValue(BOD_last_value)
       },
@@ -1207,7 +1210,7 @@ export class BusinessObjDefinitionComponent {
   }
 
   updateBusinessObjectDefinition() {
-    let model = { 
+    let model = {
       data: this.definitionFormGroup.value,
       conditions: {
         id: this.UpdateDataBusinessObjectDefinition.id
@@ -1250,22 +1253,12 @@ export class BusinessObjDefinitionComponent {
     })
   }
 
-  addBOS_dialogRef!: MatDialogRef<BusinessObjectStructureComponent>
 
-  addBOS(){
-    this.addBOS_dialogRef = this.dialog.open(BusinessObjectStructureComponent,
-      {
-        disableClose: true,
-        // hasBackdrop: true,
-        width: '90%',
-        height: 'auto',
-        autoFocus: false,
-      })
-
-    this.addBOS_dialogRef.afterClosed().subscribe({
-      next: res => {
-      }
-    })
+  addBOS() {
+    this.FF['business_object_id'].value && this.FF['business_object_name'].value && this.FF['project_name'].value ? 
+    this.router.navigate(['../pages/structure', { bo_id: this.FF['business_object_id'].value, bo_name: this.FF['business_object_name'].value, project_name: this.FF['project_name'].value }])
+    :
+    swalInfo('You need Project name, Business object name, Business object ID to add Busines Object Structure');
   }
 
   showGrid() {
