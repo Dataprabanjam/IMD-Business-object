@@ -127,3 +127,13 @@
     color: #fff;
     border-radius: 50%;
 }
+
+.bod-fields {
+    label{
+        color: #576cfb !important;
+    }
+
+    input, .mat-input{
+        border: 1px solid #576cfb !important;  
+    }
+}
