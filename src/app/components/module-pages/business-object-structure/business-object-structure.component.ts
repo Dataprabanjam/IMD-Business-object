@@ -31,7 +31,7 @@ export class BusinessObjectStructureComponent {
     private activatedRoute: ActivatedRoute,
     private router: Router,
   ) {
-    this.getTable(1);
+    this.getTable();
     this.getComboboxData();
 
     this.generateForm();
@@ -162,21 +162,6 @@ export class BusinessObjectStructureComponent {
   
 
   getComboboxData() {
-    // this.businessService.getBusinessRule().subscribe({
-    //   next: res => {
-    //     res.data.map((dt: any) => {
-    //       !this.businessRules.some(item => item.value === dt.rule) ? this.businessRules.push({ value: dt.rule }) : '';
-    //     })
-
-    //     let rule_id = String(Number(res.data[res.data.length - 1]?.rule_id.substring(9)) + 1);
-
-    //     let last_rule_id = (rule_id.length == 1 ? this.FF['business_object_id'].value + 'BR000' : (rule_id.length == 2 ? this.FF['business_object_id'].value + 'BR00' : (rule_id.length == 3 ? this.FF['business_object_id'].value + 'BR0' : ''))) + rule_id
-    //     let BOD_last_value = res.data.length ? last_rule_id : this.FF['business_object_id'].value + 'BR' + "0001";
-    //     console.log()
-    //     this.BRF['rule_id'].setValue(BOD_last_value);
-    //   },
-    //   error: err => console.log(err)
-    // });
 
     this.businessService.getBusiness_term().subscribe({
       next: res => {
@@ -184,24 +169,50 @@ export class BusinessObjectStructureComponent {
           !this.boNames.some(item => item.value === dt.business_term) ? this.boNames.push({ value: dt.business_term }) : '';
           !this.businessAttrNames.some(item => item.value === dt.business_term) ? this.businessAttrNames.push({ value: dt.business_term }) : '';
         });
-      },
+      }, 
       error: err => console.log(err)
     });
 
 
-    this.comboboxService.getSensitivity_classification().subscribe({
-      next: res => {
-        res.data.map((dt: any) => this.infoSensitivityClassifications.push({ value: dt.sensitivity_classification }))
-      },
-      error: err => console.log(err)
-    });
+    // this.comboboxService.getSensitivity_classification().subscribe({
+    //   next: res => {
+    //     res.data.map((dt: any) => this.infoSensitivityClassifications.push({ value: dt.sensitivity_classification }))
+    //   },
+    //   error: err => console.log(err)
+    // });
 
-    this.comboboxService.getSensitivity_reason_code().subscribe({
-      next: res => {
-        res.data.map((dt: any) => this.infoSensitivityTypes.push({ value: dt.sensitivity_reason_code }))
+    // this.comboboxService.getSensitivity_reason_code().subscribe({
+    //   next: res => {
+    //     res.data.map((dt: any) => this.infoSensitivityTypes.push({ value: dt.sensitivity_reason_code }))
+    //   },
+    //   error: err => console.log(err)
+    // });
+
+    this.infoSensitivityClassifications = [
+      {
+        key: 'Secret',
+        value: 'Secret'
       },
-      error: err => console.log(err)
-    });
+      {
+        key: 'Confidential',
+        value: 'Confidential'
+      },
+      {
+        key: 'Public & Private',
+        value: 'Public & Private'
+      },
+    ]
+
+    this.infoSensitivityTypes = [
+      {
+        key: 'PII',
+        value: 'PII'
+      },
+      {
+        key: 'Competitive',
+        value: 'Competitive'
+      }
+    ]
 
     this.businessService.getBusinessObjectDefinition().subscribe({
       next: res => {
@@ -215,32 +226,7 @@ export class BusinessObjectStructureComponent {
       error: err => console.log(err)
     });
 
-    // this.comboboxService.getCountry_codes().subscribe({
-    //   next: res => {
-    //     res.data.map((dt: any) => {
-    //       !this.countryCodes.some(item => item.value === dt.Country_Codes) ? this.countryCodes.push({ value: dt.Country_Codes }) : '';
-    //     })
-    //   },
-    //   error: err => console.log(err)
-    // });
-
-    // this.comboboxService.getAsset_type().subscribe({
-    //   next: res => {
-    //     res.data.map((dt: any) => {
-    //       this.assetsTypes.push({ value: dt.asset_type_code });
-    //     })
-    //   },
-    //   error: err => console.log(err)
-    // });
-
-
-    // this.comboboxService.getSensitivity_classification().subscribe({
-    //   next: res => {
-    //     res.data.map((dt: any) => this.sensitivityClassifications.push({ value: dt.sensitivity_classification }))
-    //   },
-    //   error: err => console.log(err)
-    // });
-
+   
     this.isBusinessKeys = this.isBusinessDates = this.isMandatorys = this.isActives = [
       {
         key: '1',
@@ -322,7 +308,7 @@ export class BusinessObjectStructureComponent {
       "created_updated_by",
       "created_updated_date",
       "remarks"
-    ],
+    ], 
     columnsTranslates:
       [
         "BO name",
@@ -366,11 +352,11 @@ export class BusinessObjectStructureComponent {
   }
 
   handleDelete(id: number) {
-
+  
   }
 
   initialBOD_ID = 0;
-  getTable(index: number) {
+  getTable() {
     this.businessStructureService.getBo_structure().subscribe({
       next: res => {
         let BOD_ID = String(Number(res.data[res.data.length - 1]?.business_attribute_id.substring(3)) + 1);
@@ -427,6 +413,32 @@ export class BusinessObjectStructureComponent {
     })
   }
 
+  handleNew(){
+    this.UpdateData = {
+      project_name: this.FF['project_name'].value,
+      business_object_name: this.FF['business_object_name'].value,
+      business_object_id: this.FF['business_object_id'].value,
+      business_attribute_id: '',
+      business_attribute_name: '',
+      business_attribute_definition:  '', 
+      information_sensitivity_classification: '',
+      information_sensitivity_type:'', 
+      information_protection_method:  '',
+      business_data_type:  '',
+      business_attribute_length: 0,
+      business_attribute_scale: 0, 
+      is_business_key: '',
+      is_business_date: '', 
+      is_mandatory:  '', 
+      is_active: '',
+      created_updated_by:  '', 
+      created_updated_date:formatDate(new Date(), 'yyyy-MM-dd', 'en'), 
+      remarks: '',
+    };
+    this.generateForm();
+    this.getTable();
+  }
+
   isFormValid = true;
   handleSaveForm() {
     if (this.definitionFormGroup.valid) {
@@ -456,9 +468,7 @@ export class BusinessObjectStructureComponent {
     this.businessStructureService.updateBo_structure(model).subscribe({
       next: res => {
         swalSuccess('Updated successfully!');
-        this.getTable(0);
-        this.UpdateData = '';
-        this.generateForm();
+        this.handleNew();
         this.activeRow = -1;
         this.highlightRowDataDtOwner = '';
       },
@@ -470,7 +480,7 @@ export class BusinessObjectStructureComponent {
     this.businessStructureService.saveBo_structure(this.definitionFormGroup.value).subscribe({
       next: res => {
         swalSuccess("Saved successfully.");
-        this.getTable(0);
+        this.handleNew();
       },
       error: err => swalError("Something went wrong"),
     });
