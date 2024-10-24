@@ -62,7 +62,7 @@
               name="customerId" class="col-12" matInput formControlName="business_object_name"
               [matAutocomplete]="autoObjName">
             <mat-autocomplete #autoObjName="matAutocomplete">
-              <mat-option *ngFor="let option of filteredOptionsObjName | async " [value]="option.value">
+              <mat-option (click)="setDescription()" *ngFor="let option of filteredOptionsObjName | async " [value]="option.value">
                 {{option.value}}
               </mat-option>
             </mat-autocomplete>

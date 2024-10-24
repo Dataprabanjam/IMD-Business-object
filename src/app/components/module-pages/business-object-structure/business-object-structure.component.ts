@@ -39,13 +39,11 @@ export class BusinessObjectStructureComponent {
 
     this.activatedRoute.paramMap.subscribe({
       next: (res: any) => res.params ? (
-        console.log(res.params.bo_id),
-        console.log(res.params.bo_name),
-        console.log(res.params.project_name),
 
         this.FF['business_object_id'].setValue(res.params.bo_id),
         this.FF['business_object_name'].setValue(res.params.bo_name),
-        this.FF['project_name'].setValue(res.params.project_name)
+        this.FF['project_name'].setValue(res.params.project_name),
+        this.FF['business_object_description'].setValue(res.params.bo_desc)
       ) : null,
       error: err => console.log(err)
     })
@@ -60,6 +58,7 @@ export class BusinessObjectStructureComponent {
       project_name: [this.UpdateData?.project_name || '', [Validators.required]],
       business_object_name: [this.UpdateData?.business_object_name || '', [Validators.required]],
       business_object_id: [this.UpdateData?.business_object_id || '', [Validators.required]],
+      business_object_description: [this.UpdateData?.business_object_description || '', [Validators.required]],
       business_attribute_id: [this.UpdateData?.business_attribute_id || '', [Validators.required]],
       business_attribute_name: [this.UpdateData?.business_attribute_name || '', [Validators.required]],
       business_attribute_definition: [this.UpdateData?.business_attribute_definition || '', [Validators.required]],
@@ -161,10 +160,11 @@ export class BusinessObjectStructureComponent {
   }
   
 
-  getComboboxData() {
+  getComboboxData() { 
 
     this.businessService.getBusiness_term().subscribe({
       next: res => {
+        console.log(res.data.length)
         res.data.map((dt: any) => {
           !this.boNames.some(item => item.value === dt.business_term) ? this.boNames.push({ value: dt.business_term }) : '';
           !this.businessAttrNames.some(item => item.value === dt.business_term) ? this.businessAttrNames.push({ value: dt.business_term }) : '';

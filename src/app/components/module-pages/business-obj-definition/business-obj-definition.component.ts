@@ -182,7 +182,7 @@ export class BusinessObjDefinitionComponent {
     this.businessService.getBusiness_term().subscribe({
       next: res => {
         res.data.map((dt: any) => {
-          !this.boNames.some(item => item.value === dt.business_term) ? this.boNames.push({ value: dt.business_term }) : '';
+          !this.boNames.some(item => item.value === dt.business_term) ? this.boNames.push({ value: dt.business_term, desc: dt.business_term_description }) : '';
           !this.businessTerms.some(item => item.value === dt.business_term) ? this.businessTerms.push({ value: dt.business_term }) : '';
         });
 
@@ -595,7 +595,12 @@ export class BusinessObjDefinitionComponent {
           this.BONameTooltip.show()
         )
         : ''
-    })
+    });
+
+  }
+
+  setDescription() {
+    this.FF['business_object_description'].setValue(this.boNames.filter((dt: any) => dt.value == this.FF['business_object_name'].value)[0].desc);
   }
 
   item_dialogRef?: MatDialogRef<NewItemComponent>;
@@ -930,7 +935,7 @@ export class BusinessObjDefinitionComponent {
         swalSuccess("Saved successfully.");
         this.getTableDataOwner();
       },
-      error: err => swalError("Something went wrong")
+      error: err => swalError("Something went wrong in database!")
     })
   }
 
@@ -987,7 +992,7 @@ export class BusinessObjDefinitionComponent {
         swalSuccess("Saved successfully.");
         this.getTableImpDetails();
       },
-      error: err => swalError("Something went wrong")
+      error: err => swalError("Something went wrong in database!")
     })
   }
 
@@ -1070,7 +1075,7 @@ export class BusinessObjDefinitionComponent {
         this.getTableBusinessRule();
         this.getComboboxData();
       },
-      error: err => swalError("Something went wrong")
+      error: err => swalError("Something went wrong in database!")
     })
   }
 
@@ -1143,7 +1148,7 @@ export class BusinessObjDefinitionComponent {
         this.getTableBusinessTerm();
         this.getComboboxData();
       },
-      error: err => swalError("Something went wrong")
+      error: err => swalError("Something went wrong in database!")
     });
   }
 
@@ -1222,7 +1227,7 @@ export class BusinessObjDefinitionComponent {
         swalSuccess('Updated successfully!');
         this.getTableBusinessObjectDefinition(0);
       },
-      error: err => swalError("Something went wrong"),
+      error: err => swalError("Something went wrong in database!"),
     })
   }
 
@@ -1232,7 +1237,7 @@ export class BusinessObjDefinitionComponent {
         swalSuccess("Saved successfully.");
         this.getTableBusinessObjectDefinition(0);
       },
-      error: err => swalError("Something went wrong"),
+      error: err => swalError("Something went wrong in database!"),
     });
   }
 
@@ -1255,10 +1260,10 @@ export class BusinessObjDefinitionComponent {
 
 
   addBOS() {
-    this.FF['business_object_id'].value && this.FF['business_object_name'].value && this.FF['project_name'].value ? 
-    this.router.navigate(['../pages/structure', { bo_id: this.FF['business_object_id'].value, bo_name: this.FF['business_object_name'].value, project_name: this.FF['project_name'].value }])
-    :
-    swalInfo('You need Project name, Business object name, Business object ID to add Busines Object Structure');
+    this.FF['business_object_id'].value && this.FF['business_object_name'].value && this.FF['project_name'].value ?
+      this.router.navigate(['../pages/structure', { bo_id: this.FF['business_object_id'].value, bo_name: this.FF['business_object_name'].value, bo_desc: this.FF['business_object_description'].value, project_name: this.FF['project_name'].value }])
+      :
+      swalInfo('You need Project name, Business object name, Business object ID to add Busines Object Structure');
   }
 
   showGrid() {
